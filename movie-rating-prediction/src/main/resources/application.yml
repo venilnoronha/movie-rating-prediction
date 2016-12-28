@@ -1,0 +1,4 @@
+data:
+  base-data-directory: data/
+  positive-reviews-directory: positive/
+  negative-reviews-directory: negative/
