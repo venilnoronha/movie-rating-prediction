@@ -23,6 +23,8 @@ import java.util.Map;
 import lombok.Data;
 
 /**
+ * {@link DataModel} is a concrete model for storing trained data sets.
+ *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */

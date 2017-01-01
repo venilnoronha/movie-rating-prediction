@@ -2,3 +2,10 @@ data:
   base-data-directory: data/
   positive-reviews-directory: positive/
   negative-reviews-directory: negative/
+  stop-words-directory: stopwords/
+
+twitter:
+  consumer-key: XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  consumer-secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  access-token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  access-token-secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

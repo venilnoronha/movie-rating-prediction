@@ -14,35 +14,19 @@
  * limitations under the License.
  */
 
-package ai.mrp.config;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
-import lombok.Data;
+package ai.mrp.inf;
 
 /**
- * {@link DataConfig} provides configuration that is necessary for training
- * classifiers.
+ * Implementation of the {@link ClassificationEngine} connects to a data source
+ * and classifies the data.
  *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
-@Data
-@Configuration
-@ConfigurationProperties("data")
-public class DataConfig {
+public interface ClassificationEngine {
 
-	/** The base data directory. */
-	private String baseDataDirectory;
+	public void start();
 
-	/** The positive reviews sub-directory. */
-	private String positiveReviewsDirectory;
-
-	/** The negative reviews sub-directory. */
-	private String negativeReviewsDirectory;
-
-	/** The stop-words sub-directory. */
-	private String stopWordsDirectory;
+	public void stop();
 
 }

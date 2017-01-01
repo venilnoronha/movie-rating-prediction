@@ -14,35 +14,33 @@
  * limitations under the License.
  */
 
-package ai.mrp.config;
+package ai.mrp.util;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import java.util.concurrent.Callable;
 
-import lombok.Data;
+import org.springframework.util.StopWatch;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * {@link DataConfig} provides configuration that is necessary for training
- * classifiers.
- *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
-@Data
-@Configuration
-@ConfigurationProperties("data")
-public class DataConfig {
+@Slf4j
+public class ProfileUtils {
 
-	/** The base data directory. */
-	private String baseDataDirectory;
+	private ProfileUtils() { }
 
-	/** The positive reviews sub-directory. */
-	private String positiveReviewsDirectory;
-
-	/** The negative reviews sub-directory. */
-	private String negativeReviewsDirectory;
-
-	/** The stop-words sub-directory. */
-	private String stopWordsDirectory;
+	public static <T> T profileExecution(Callable<T> callable) throws Exception {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		try {
+			return callable.call();
+		}
+		finally {
+			stopWatch.stop();
+			log.debug(stopWatch.prettyPrint());
+		}
+	}
 
 }

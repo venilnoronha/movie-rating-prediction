@@ -19,11 +19,20 @@ package ai.mrp.inf;
 import ai.mrp.model.DataModel;
 
 /**
+ * Implementations of {@link Trainer} provide methods for training and creating
+ * {@link DataModel}s.
+ *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
 public interface Trainer<C extends Enum<C>> {
 
+	/**
+	 * Trains and creates a {@link DataModel}.
+	 * 
+	 * @return the {@link DataModel}
+	 * @throws Exception if training fails
+	 */
 	public DataModel<C> train() throws Exception;
 
 }

@@ -17,6 +17,8 @@
 package ai.mrp.model;
 
 /**
+ * The class types of a review.
+ *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */

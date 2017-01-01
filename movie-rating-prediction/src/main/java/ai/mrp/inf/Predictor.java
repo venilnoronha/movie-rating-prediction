@@ -16,15 +16,20 @@
 
 package ai.mrp.inf;
 
-import ai.mrp.model.DataModel;
-import ai.mrp.model.ReviewType;
-
 /**
+ * Implementations of {@link Predictor} predict classes given an input text.
+ *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
 public interface Predictor<C extends Enum<C>> {
 
-	public ReviewType predict(DataModel<ReviewType> dataModel, String sentence);
+	/**
+	 * Predicts the class of a given input text.
+	 *
+	 * @param text the text for which the class is to be predicted
+	 * @return the predicted class
+	 */
+	public C predict(String text);
 
 }

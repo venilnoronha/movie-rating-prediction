@@ -22,27 +22,27 @@ import org.springframework.context.annotation.Configuration;
 import lombok.Data;
 
 /**
- * {@link DataConfig} provides configuration that is necessary for training
- * classifiers.
+ * {@link TwitterConfig} provides configuration that is necessary for streaming
+ * tweets.
  *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
 @Data
 @Configuration
-@ConfigurationProperties("data")
-public class DataConfig {
+@ConfigurationProperties("twitter")
+public class TwitterConfig {
 
-	/** The base data directory. */
-	private String baseDataDirectory;
+	/** The Twitter app consumer key. */
+	private String consumerKey;
 
-	/** The positive reviews sub-directory. */
-	private String positiveReviewsDirectory;
+	/** The Twitter app consumer secret. */
+	private String consumerSecret;
 
-	/** The negative reviews sub-directory. */
-	private String negativeReviewsDirectory;
+	/** The Twitter app user access token. */
+	private String accessToken;
 
-	/** The stop-words sub-directory. */
-	private String stopWordsDirectory;
+	/** The Twitter app user access token secret. */
+	private String accessTokenSecret;
 
 }

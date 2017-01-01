@@ -28,13 +28,17 @@ import ai.mrp.config.DataConfig;
 import ai.mrp.inf.Trainer;
 import ai.mrp.model.DataModel;
 import ai.mrp.model.ReviewType;
+import ai.mrp.util.FileUtils;
 
 /**
+ * {@link NaiveBayesTrainerImpl} implements logic to train the Naive Bayes
+ * classifier.
+ *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
 @Component
-public class TrainerImpl implements Trainer<ReviewType> {
+public class NaiveBayesTrainerImpl implements Trainer<ReviewType> {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -45,32 +49,34 @@ public class TrainerImpl implements Trainer<ReviewType> {
 	@Override
 	public DataModel<ReviewType> train() throws Exception {
 		DataModel<ReviewType> dataModel = new DataModel<>(ReviewType.class);
-		train(dataModel, ReviewType.POSITIVE, loadFile(dataConfig.getBaseDataDirectory() + dataConfig.getPositiveReviewsDirectory()));
-		train(dataModel, ReviewType.NEGATIVE, loadFile(dataConfig.getBaseDataDirectory() + dataConfig.getNegativeReviewsDirectory()));
+		train(dataModel, ReviewType.POSITIVE,
+			FileUtils.loadFile(resourceLoader, dataConfig.getBaseDataDirectory() + dataConfig.getPositiveReviewsDirectory()));
+		train(dataModel, ReviewType.NEGATIVE,
+			FileUtils.loadFile(resourceLoader, dataConfig.getBaseDataDirectory() + dataConfig.getNegativeReviewsDirectory()));
 		return dataModel;
 	}
 
+	/**
+	 * Trains a given {@link DataModel} with the given class type, with the data
+	 * at the given directory.
+	 *
+	 * @param dataModel the {@link DataModel} to train
+	 * @param type the class type
+	 * @param directory the directory from which data is to be loaded
+	 * @throws IOException if data loading fails
+	 */
 	private void train(DataModel<ReviewType> dataModel, ReviewType type, File directory) throws IOException {
 		Files
 			.list(directory.toPath())
-			.flatMap(p -> {
-				try {
-					return Files.lines(p);
-				}
-				catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			})
-			.map(line -> line.toLowerCase().split(" "))
+			.map(FileUtils::readLines)
+			.map(lines -> lines.toString())
+			.map(lineStr -> lineStr.substring(1, lineStr.length() - 1).toLowerCase())
+			.map(lines -> lines.split(" "))
 			.forEach(words -> {
 				for (String word : words) {
 					dataModel.put(type, word);
 				}
 			});
-	}
-
-	private File loadFile(String path) throws IOException {
-		return resourceLoader.getResource("classpath:" + path).getFile();
 	}
 
 }

@@ -16,36 +16,34 @@
 
 package ai.mrp;
 
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import ai.mrp.inf.Predictor;
-import ai.mrp.inf.Trainer;
-import ai.mrp.model.DataModel;
-import ai.mrp.model.ReviewType;
+import ai.mrp.inf.ClassificationEngine;
 
 /**
+ * The Movie Rating Predication app bootstrap.
+ *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
 @SpringBootApplication
-public class MovieRatingPredictionApplication implements CommandLineRunner {
+public class MovieRatingPredictionApplication implements CommandLineRunner, DisposableBean {
 
 	@Autowired
-	private Trainer<ReviewType> trainer;
-
-	@Autowired
-	private Predictor<ReviewType> predictor;
+	private ClassificationEngine engine;
 
 	@Override
 	public void run(String... args) throws Exception {
-		DataModel<ReviewType> dataModel = trainer.train();
-		predictor.predict(dataModel, "i love this movie");
-		predictor.predict(dataModel, "this movie is simply awesome");
-		predictor.predict(dataModel, "its very bad");
-		predictor.predict(dataModel, "Not that great");
+		engine.start();
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		engine.stop();
 	}
 
 	public static void main(String[] args) {
