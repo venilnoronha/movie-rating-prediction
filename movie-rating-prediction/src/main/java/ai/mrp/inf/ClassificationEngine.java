@@ -26,9 +26,11 @@ package ai.mrp.inf;
 public interface ClassificationEngine {
 
 	/**
-	 * Starts the classification engine.
+	 * Updates the classification engine with the given keyword.
+	 *
+	 * @param keyword the keyword to fetch data for
 	 */
-	public void start();
+	public void update(String keyword);
 
 	/**
 	 * Stops the classification engine.

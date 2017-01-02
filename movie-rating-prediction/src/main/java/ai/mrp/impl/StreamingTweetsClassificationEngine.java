@@ -109,10 +109,19 @@ public class StreamingTweetsClassificationEngine implements ClassificationEngine
 
 	/**
 	 * Starts streaming data from Twitter.
+	 *
+	 * @param tag the tag to track
 	 */
 	@Override
-	public void start() {
-	    streamInstance.filter(new FilterQuery("#lalaland", "#hiddenfigures", "#whyhim","#hollyweed", "#newyear"));
+	public void update(String tag) {
+		log.info("Initializing stream for tag: {}", tag);
+//		try {
+//			streamInstance.cleanUp();
+//		}
+//		catch (Exception e) {
+//			log.warn("Could not to shut down stream.", e);
+//		}
+	    streamInstance.filter(new FilterQuery(tag));
 	}
 
 	/**

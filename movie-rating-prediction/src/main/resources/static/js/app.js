@@ -21,7 +21,15 @@ var searchCtrl = mrpApp.controller('searchCtrl', ['$rootScope', '$scope', '$http
     	$http
 			.get('http://www.omdbapi.com/?t=' + $scope.movieName + '&r=json')
 			.then(function(response) {
-				$rootScope.$broadcast('search-result', response.data);
+				var data = response.data;
+				if (!!data && !!data.Title) {
+					$http
+						.get('/movie/update?name=' + $scope.movieName)
+						.then(function(response) {
+			    			$rootScope.$broadcast('clear-verbatim');
+						});
+				}
+				$rootScope.$broadcast('search-result', data);
 			});
     };
 
@@ -64,12 +72,18 @@ var searchResultCtrl = mrpApp.controller('searchResultCtrl', ['$scope', '$timeou
 	});
 
     $scope.$on('new-verbatim', function(e, verbatim) {
-    	$scope.$apply(function() {
+    	$timeout(function() {
     		$scope.verbatimList.push(verbatim);
     		var verbatimEl = document.getElementById('verbatim');
     		$timeout(function() {
     			verbatimEl.scrollTop = verbatimEl.scrollHeight;
     		});
+    	});
+    });
+    
+    $scope.$on('clear-verbatim', function() {
+    	$timeout(function() {
+    		$scope.verbatimList = [];
     	});
     });
     

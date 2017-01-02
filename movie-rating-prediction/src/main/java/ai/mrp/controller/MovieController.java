@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
-package ai.mrp;
+package ai.mrp.controller;
 
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import ai.mrp.inf.ClassificationEngine;
 
 /**
- * The Movie Rating Predication app bootstrap.
+ * Implements logic for controlling movie review data source. 
  *
  * @author Donnabell Dmello <ddmello@usc.edu>
  * @author Venil Noronha <vnoronha@usc.edu>
  */
-@SpringBootApplication
-public class MovieRatingPredictionApplication implements DisposableBean {
+@RestController
+@RequestMapping(path = "movie")
+public class MovieController {
 
 	@Autowired
 	private ClassificationEngine engine;
 
-	@Override
-	public void destroy() throws Exception {
-		engine.stop();
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(MovieRatingPredictionApplication.class, args);
+	/**
+	 * Updates the data source with the movie name. 
+	 * 
+	 * @param name the name of the movie
+	 */
+	@RequestMapping(path = "update")
+	public void update(@RequestParam("name") String name) {
+		String tag = "#" + name.replaceAll(" ", "").toLowerCase();
+		engine.update(tag);
 	}
 
 }
