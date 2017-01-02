@@ -16,11 +16,6 @@
 
 package ai.mrp.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import ai.mrp.config.DataConfig;
 import ai.mrp.inf.Predictor;
+import ai.mrp.inf.Trainer;
 import ai.mrp.model.ReviewType;
 import ai.mrp.util.FileUtils;
 import ai.mrp.util.ProfileUtils;
@@ -37,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.meta.FilteredClassifier;
-import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -56,14 +51,9 @@ import weka.filters.unsupervised.attribute.StringToWordVector;
 @Qualifier("SVM")
 public class SVMPredictorImpl implements Predictor<ReviewType>, InitializingBean {
 
-	/** The list of valid class types to predict. */
-	private static final ArrayList<String> CLASSES;
-
-	static {
-		CLASSES = new ArrayList<>();
-		CLASSES.add(ReviewType.POSITIVE.name());
-		CLASSES.add(ReviewType.NEGATIVE.name());
-	}
+	@Autowired
+	@Qualifier("SVM")
+	private Trainer<Instances> svmTrainer;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -81,7 +71,7 @@ public class SVMPredictorImpl implements Predictor<ReviewType>, InitializingBean
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		this.trainingData = loadTrainingData();
+		this.trainingData = svmTrainer.train();
 		StringToWordVector stwvFilter = createFilter(this.trainingData);
 		// Instances filterdInstances = Filter.useFilter(data, stwv);
 
@@ -101,69 +91,6 @@ public class SVMPredictorImpl implements Predictor<ReviewType>, InitializingBean
 		// predict("this movie is simply awesome");
 		// predict("its very bad");
 		// predict("Not that great");
-	}
-
-	/**
-	 * Loads the training data.
-	 *
-	 * @return the training data
-	 * @throws IOException if loading fails
-	 */
-	private Instances loadTrainingData() throws IOException {
-		Instances instances = createInstances();
-		loadData(instances, FileUtils.loadFile(resourceLoader,
-			dataConfig.getBaseDataDirectory() + dataConfig.getPositiveReviewsDirectory()), ReviewType.POSITIVE);
-		loadData(instances, FileUtils.loadFile(resourceLoader,
-			dataConfig.getBaseDataDirectory() + dataConfig.getNegativeReviewsDirectory()), ReviewType.NEGATIVE);
-		return instances;
-	}
-
-	/**
-	 * Loads the training data into the model.
-	 *
-	 * @param instances the model into which the training data is to be loaded
-	 * @param dir the directory from which the training data is to be loaded
-	 * @param reviewType the class type of the training data to be loaded
-	 * @throws IOException if loading fails
-	 */
-	private void loadData(Instances instances, File dir, ReviewType reviewType) throws IOException {
-		Files
-		.list(dir.toPath())
-		.map(FileUtils::readLines)
-		.map(lines -> lines.toString())
-		.map(linesStr -> linesStr.substring(1, linesStr.length() - 1).toLowerCase())
-		.map(text -> createInstance(instances, reviewType, text))
-		.forEach(instances::add);
-	}
-
-	/**
-	 * Creates a basic model.
-	 *
-	 * @return the model
-	 */
-	private Instances createInstances() {
-		ArrayList<Attribute> attributes = new ArrayList<>();
-		attributes.add(new Attribute("text", (ArrayList<String>) null));
-		attributes.add(new Attribute("@@class@@", CLASSES));
-		Instances instances = new Instances("instances", attributes, 0);
-		instances.setClassIndex(instances.numAttributes() - 1);
-		return instances;
-	}
-
-	/**
-	 * Creates a single instance.
-	 *
-	 * @param instances the model to which the instance belongs
-	 * @param reviewType the class to which the instance belongs
-	 * @param text the instance text
-	 * @return the instance
-	 */
-	private DenseInstance createInstance(Instances instances, ReviewType reviewType,
-			String text) {
-		double[] attributes = new double[2];
-		attributes[0] = instances.attribute(0).addStringValue(text);
-		attributes[1] = CLASSES.indexOf(reviewType.name());
-		return new DenseInstance(1, attributes);
 	}
 
 	/**
