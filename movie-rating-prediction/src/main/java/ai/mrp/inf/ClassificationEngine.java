@@ -25,8 +25,14 @@ package ai.mrp.inf;
  */
 public interface ClassificationEngine {
 
+	/**
+	 * Starts the classification engine.
+	 */
 	public void start();
 
+	/**
+	 * Stops the classification engine.
+	 */
 	public void stop();
 
 }
