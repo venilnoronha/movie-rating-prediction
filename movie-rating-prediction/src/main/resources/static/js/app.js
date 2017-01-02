@@ -17,6 +17,7 @@ var searchCtrl = mrpApp.controller('searchCtrl', ['$rootScope', '$scope', '$http
     };
 
     $scope._performQuery = function() {
+    	$rootScope.$broadcast('loading');
     	$http
 			.get('http://www.omdbapi.com/?t=' + $scope.movieName + '&r=json')
 			.then(function(response) {
@@ -28,7 +29,7 @@ var searchCtrl = mrpApp.controller('searchCtrl', ['$rootScope', '$scope', '$http
 
 var searchResultCtrl = mrpApp.controller('searchResultCtrl', ['$scope', function($scope) {
 
-	$scope.movieTitle = "Movie not found!";
+	$scope.movieTitle = "";
 	$scope.moviePoster = "";
 
 	$scope.$on('search-result', function(e, data) {
@@ -40,6 +41,11 @@ var searchResultCtrl = mrpApp.controller('searchResultCtrl', ['$scope', function
 			$scope.movieTitle = data.Title + " (" + data.Year + ")";
 			$scope.moviePoster = data.Poster;
 		}
+	});
+
+	$scope.$on('loading', function() {
+		$scope.movieTitle = "Loading...";
+		$scope.moviePoster = "images/loading.gif";
 	});
 
 }]);
