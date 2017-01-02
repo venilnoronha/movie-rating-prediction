@@ -41,7 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 public class NaiveBayesPredictorImpl implements Predictor<ReviewType>, InitializingBean {
 
 	@Autowired
-	private Trainer<ReviewType> trainer;
+	@Qualifier("NaiveBayes")
+	private Trainer<DataModel<ReviewType>> trainer;
 
 	private DataModel<ReviewType> dataModel;
 

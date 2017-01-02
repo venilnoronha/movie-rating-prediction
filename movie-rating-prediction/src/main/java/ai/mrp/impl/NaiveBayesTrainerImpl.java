@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +39,8 @@ import ai.mrp.util.FileUtils;
  * @author Venil Noronha <vnoronha@usc.edu>
  */
 @Component
-public class NaiveBayesTrainerImpl implements Trainer<ReviewType> {
+@Qualifier("NaiveBayes")
+public class NaiveBayesTrainerImpl implements Trainer<DataModel<ReviewType>> {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
