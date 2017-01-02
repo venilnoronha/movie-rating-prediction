@@ -3,6 +3,8 @@
 	<title>Movie Rating Prediction App</title>
 	<link rel="stylesheet" href="styles.css" />
 	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script src="js/sockjs.min.js"></script>
+	<script src="js/stomp.min.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 <body>
 	<div id="app">
@@ -19,35 +21,7 @@
 				<div id="movie-title">{{movieTitle}}</div>
 			</div>
 			<div id="verbatim">
-				<div class="post">
-					<div class="metadata">
-						SVM <img src="images/happy.png" class="icon" />
-						&nbsp;
-						NB <img src="images/angry.png" class="icon" />
-						<img src="images/twitter-icon.png" class="icon" style="float: right; margin-right: 4px;" />
-						<div style="float: right; margin-right: 4px;">
-							<span class="half-line" style="margin-top: 2px;">Venil Noronha (@venilnoronha)</span><br />
-							<span class="half-line">Thu 4pm</span>
-						</div>
-					</div>
-					<div class="comment">
-						In publishing and graphic design, lorem
-						ipsum (derived from Latin dolorem ipsum, translated as "pain
-						itself") is a filler text commonly used to demonstrate the graphic
-						elements of a document or visual presentation. Replacing
-						meaningful content with placeholder text allows designers to
-						design the form of the content before the content itself has been
-						produced.[citation needed] The lorem ipsum text is typically a
-						scrambled section of De finibus bonorum et malorum, a 1st-century
-						BC Latin text by Cicero, with words altered, added, and removed to
-						make it nonsensical, improper Latin.[citation needed] A variation
-						of the ordinary lorem ipsum text has been used in typesetting
-						since the 1960s or earlier, when it was popularized by
-						advertisements for Letraset transfer sheets. It was introduced to
-						the Information Age in the mid-1980s by Aldus Corporation, which
-						employed it in graphics and word-processing text.
-					</div>
-				</div>
+				<div class="post" verbatim model="vdata" ng-repeat="vdata in verbatimList"></div>
 			</div>
 		</div>
 	</div>

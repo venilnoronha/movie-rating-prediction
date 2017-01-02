@@ -1,0 +1,14 @@
+<div class="metadata">
+	<span data-ng-repeat="(classifier, reviewType) in verbatimData.sentiment">
+		{{classifier}}
+		<img data-ng-if="reviewType == 'POSITIVE'" src="images/happy.png" class="icon" />
+		<img data-ng-if="reviewType == 'NEGATIVE'" src="images/angry.png" class="icon" />
+	</span>
+	<img src="{{verbatimData.userPic}}" class="icon" style="float: right; margin-right: 4px;" />
+	<div style="float: right; margin-right: 4px;">
+		<span class="half-line" style="margin-top: 2px;">{{verbatimData.authorName}}
+			(@{{verbatimData.userName}})</span><br /> 
+			<span class="half-line">{{verbatimData.datePosted | date:'medium'}}</span>
+	</div>
+</div>
+<div class="comment">{{verbatimData.text}}</div>

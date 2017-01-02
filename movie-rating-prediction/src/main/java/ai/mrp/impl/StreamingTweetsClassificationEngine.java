@@ -16,15 +16,20 @@
 
 package ai.mrp.impl;
 
+import java.util.EnumMap;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import ai.mrp.config.TwitterConfig;
 import ai.mrp.inf.ClassificationEngine;
 import ai.mrp.inf.Predictor;
+import ai.mrp.model.ClassifierType;
 import ai.mrp.model.ReviewType;
+import ai.mrp.model.Verbatim;
 import lombok.extern.slf4j.Slf4j;
 import twitter4j.FilterQuery;
 import twitter4j.Status;
@@ -59,6 +64,9 @@ public class StreamingTweetsClassificationEngine implements ClassificationEngine
 
 	private TwitterStream streamInstance;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    
 	/**
 	 * Creates the stream instance and configures the stream listeners.
 	 */
@@ -74,16 +82,25 @@ public class StreamingTweetsClassificationEngine implements ClassificationEngine
 	    streamInstance.addListener(new StatusAdapter() {
 	    	@Override public void onStatus(Status status) {
 	    		if (!status.isRetweet()) {
-		    		ReviewType reviewType = nbPredictor.predict(status.getText());
-		    		log.info("NB -- {}: {}", reviewType, status.getText());
-	    		}
-	    	}
-	    });
-	    streamInstance.addListener(new StatusAdapter() {
-	    	@Override public void onStatus(Status status) {
-	    		if (!status.isRetweet()) {
-		    		ReviewType reviewType = svmPredictor.predict(status.getText());
-		    		log.info("SVM -- {}: {}", reviewType, status.getText());
+		    		ReviewType reviewTypeNB = nbPredictor.predict(status.getText());
+		    		log.info("NB -- {}: {}", reviewTypeNB, status.getText());
+
+		    		ReviewType reviewTypeSVM = svmPredictor.predict(status.getText());
+		    		log.info("SVM -- {}: {}", reviewTypeSVM, status.getText());
+		    		
+		    		EnumMap<ClassifierType, ReviewType> sentiment = new EnumMap<>(ClassifierType.class);
+		    		sentiment.put(ClassifierType.NB, reviewTypeNB);
+		    		sentiment.put(ClassifierType.SVM, reviewTypeSVM);
+
+		    		//Creating Verbatim to publish
+		    		Verbatim verbatim = new Verbatim("TWITTER", 
+		    				status.getText(), 
+		    				status.getUser().getName(), 
+		    				status.getUser().getScreenName(),
+		    				status.getUser().getProfileImageURL(),
+		    				status.getCreatedAt(),
+		    				sentiment);
+			        messagingTemplate.convertAndSend("/stream/verbatim", verbatim);
 	    		}
 	    	}
 	    });
@@ -95,7 +112,7 @@ public class StreamingTweetsClassificationEngine implements ClassificationEngine
 	 */
 	@Override
 	public void start() {
-	    streamInstance.filter(new FilterQuery("#lalaland", "#hiddenfigures", "#whyhim"));
+	    streamInstance.filter(new FilterQuery("#lalaland", "#hiddenfigures", "#whyhim","#hollyweed", "#newyear"));
 	}
 
 	/**

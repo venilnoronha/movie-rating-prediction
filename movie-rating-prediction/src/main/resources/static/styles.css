@@ -116,6 +116,7 @@ body {
 .post .metadata .icon {
 	height: 30px;
 	width: 30px;
+	border-radius: 30px;
 	vertical-align: middle;
 }
 
