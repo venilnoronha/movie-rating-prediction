@@ -132,3 +132,24 @@ body {
 	display: inline-block;
 	text-align: justify;
 }
+
+#info {
+	position: fixed;
+	z-index: 99999;
+	right: 15px;
+	bottom: 15px;
+	font-size: 11px;
+	color: #ecf0f1;
+	text-align: center;
+}
+
+#info a {
+	color: #ecf0f1;
+	text-decoration: underline;
+	outline: none;
+	border: none;
+}
+
+#info a:hover {
+	color: #f1c40f;
+}
